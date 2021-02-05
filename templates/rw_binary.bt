@@ -1,0 +1,72 @@
+//------------------------------------------------
+//--- 010 Editor v11.0.1 Binary Template
+//
+//      File:rw_binary.bt 
+//   Authors:Tupelov
+//   Version:1.0
+//   Purpose:Analyzing Renderware formats(dff/rws/rmd/etc) 
+//  Category: Renderware
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//          1.0- Initial Release
+//------------------------------------------------
+
+enum<uint>ChunkID{
+	NAObject = 0,
+	Struct = 1,
+	String = 2,
+	Camera = 5,
+	Texture = 6,
+	Material = 7,
+	MaterialList = 8,
+	AtomicSection = 9,
+	PlaneSection = 10,
+	World = 11,
+	Spline =12,
+	Matrix = 13,
+	
+	FrameList = 14,
+	
+	TextureNative = 21,
+	TextureDictionary = 22,
+	
+	SkyMipMapVal = 272,
+};
+struct Chunk;
+
+typedef struct {
+	struct header {
+		ChunkID ChunkType <name = "Chunk Type">;
+		uint DataSize;
+		uint16 BuildNumber;
+		uint16 Version;
+	}Header <name = "Header">;
+	
+	if(Header.ChunkType == 1){
+		FSeek(FTell-8)
+		ChunkID ChunkTypeofParent;
+		FSkip(4);
+		GetProperStructData();
+	}
+	
+	
+	local int dataStart = FTell();
+	if(FTell()!=dataStart+Header.DataSize){
+		Chunk childChunk;
+	}
+	//FSkip(Header.DataSize);
+
+	//Assert(0, dataStart.toString());
+	
+}Chunk;
+
+Chunk test <name = "TextureDictionary">;
+//short ChunkID1;
+
+struct StructData (ChunkID ParentChunkID){
+	
+	if(ParentChunkID == 22){
+		
+	}
+}
