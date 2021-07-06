@@ -407,9 +407,16 @@ typedef enum<int>
 	MESSAGE_MODE_NOSTOP = 1,
 }MESSAGE_MODE;
 
+typedef struct {
+	short FlagNo;
+	short CmpValue;
+	UNIT_FLAG_TYPE GFlagType<comment = "Only used when FlagType is Global">;
+	UNIT_GFLAG_TYPE GFLAGTYPE;
+}pmdMessageFlags;
 
 typedef struct {
-	pmdDataInfo_t Data1[3];
+	pmdDataInfo_t Data1[1];
+	pmdMessageFlags Flags;
 	int MessageIndex;
 	MESSAGE_MODE messageMode;
 	pmdDataInfo_t Data2[8];
