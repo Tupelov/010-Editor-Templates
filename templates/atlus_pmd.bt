@@ -86,11 +86,11 @@ typedef enum<int>
 	PMD_DATATYPE_MULTFILTER = 19,
 	PMD_DATATYPE_RIPBLUR = 20,
 
-	PMD_DATATYPE_OBJECT_TABLE=21,
+	PMD_DATATYPE_OBJECT_TABLE = 21,
 	PMD_DATATYPE_RAIN_DATA = 25,
 	PMD_DATATYPE_BEZIER_TABLE = 26,
-
-	PMD_DATATYPE_MAX=28
+	PMD_DATATYPE_REF_TABLE = 27,
+	PMD_DATATYPE_MAX = 28
 }PMD_DATATYPE;
 
 typedef enum<ushort>
@@ -204,9 +204,9 @@ typedef enum<byte>
 	KUBI_RESET = 1,
 }KUBI_PARAM;
 
-typedef enum<int> 
+typedef enum<int>
 {
-	MODEL_ATTACH_ATTACH=0,
+	MODEL_ATTACH_ATTACH = 0,
 	MODEL_ATTACH_DETACH = 1,
 }MODEL_ATTACH_PARAM;
 typedef enum<int>
@@ -239,6 +239,12 @@ typedef struct {
 	char Name[32];
 }pmdNameTable_t;
 
+typedef enum<int> {
+	OBJ_TYPE_ATTACH = 1,
+	OBJ_TYPE_FIELD_OBJ = 2,
+
+}UNIT_OBJ_TYPE;
+
 typedef struct {
 	int NameIndex;
 	int FileIndex;
@@ -246,7 +252,7 @@ typedef struct {
 	int MinorNum;
 	int DataOffset;
 	int DataSize;
-	int Unknown1;
+	UNIT_OBJ_TYPE Type;
 	int Reserve1;
 	getName(NameIndex);
 	getData(DataOffset, DataSize);
@@ -355,7 +361,7 @@ typedef struct {
 	UNIT_FLAG_TYPE FlagType;
 	short FlagNo;
 	short CmpValue;
-	UNIT_GFLAG_TYPE GFlagType<comment="Only used when FlagType is Global">;
+	UNIT_GFLAG_TYPE GFlagType<comment = "Only used when FlagType is Global">;
 }pmdUnitFlags;
 
 typedef struct {
@@ -395,6 +401,21 @@ typedef struct {
 	byte Data[52];
 }pmdFadeObject_t;
 
+typedef enum<int>
+{
+	MESSAGE_MODE_STOP = 0,
+	MESSAGE_MODE_NOSTOP = 1,
+}MESSAGE_MODE;
+
+
+typedef struct {
+	pmdDataInfo_t Data1[3];
+	int MessageIndex;
+	MESSAGE_MODE messageMode;
+	pmdDataInfo_t Data2[8];
+}pmdMessageObject_t;
+
+
 typedef struct {
 	PMD_OBJTYPE ObjectType;
 	ushort Frame;
@@ -407,6 +428,9 @@ typedef struct {
 		break;
 	case PMD_OBJTYPE_FADE:
 		pmdFadeObject_t pmdFadeObject;
+		break;
+	case PMD_OBJTYPE_MESSAGE:
+		pmdMessageObject_t pmdMessageObject;
 		break;
 	default:
 		Printf("Ran into unknown objecttype: %d\n", ObjectType);
@@ -440,6 +464,22 @@ typedef struct {
 	vector3 Pos3;
 	vector3 Pos4;
 }BezierCurve;
+
+typedef struct {
+	byte Unknown1;
+	byte Unknown2;
+	short Unknown3;
+	short Unknown4;
+	byte Unknown5;
+	byte Unknown6;
+	short Unknown7;
+	byte Unknown8;
+	byte Unknown9;
+	int reserve1;
+	int reserve2;
+}pmdObjectTable_t;
+
+
 typedef struct {
 
 	byte Unknown1;
@@ -496,6 +536,9 @@ typedef struct {
 		break;
 	case PMD_DATATYPE_FTB:
 		unknownDataType Data<comment = "SMT Nocturne Left Over">;
+		break;
+	case PMD_DATATYPE_OBJECT_TABLE:
+		pmdObjectTable_t pmdObjectTable[ItemCount];
 		break;
 	case PMD_DATATYPE_BEZIER_TABLE:
 		pmdBezierTable_t pmdBezierTable[ItemCount];
